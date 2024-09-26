@@ -6,9 +6,7 @@ import {
   getCurrentUser,
   logout,
   forgotPassword,
-  resetPassword,
-  updateUser,
-  deleteUser
+  resetPassword
 } from '../controllers/authController';
 import { authenticate } from '../middlewares/authenticate';
 import { AuthenticatedRequest } from '../types/types';
@@ -44,22 +42,6 @@ authRouter.post('/logout', authenticate, async (req: AuthenticatedRequest, res: 
 authRouter.get('/me', authenticate, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
       getCurrentUser(req, res);
-    } catch (error) {
-      next(error);
-    }
-});
-
-authRouter.put('/update', authenticate, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-    try {
-        await updateUser(req, res, next).catch(next);
-    } catch (error) {
-        next(error);
-    }
-});
-
-authRouter.delete('/delete', authenticate, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-    try {
-      await deleteUser(req, res);
     } catch (error) {
       next(error);
     }
