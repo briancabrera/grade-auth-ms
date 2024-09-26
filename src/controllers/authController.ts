@@ -154,3 +154,22 @@ export const updateUser = async (req: AuthenticatedRequest, res: Response, next:
     next(error);
   }
 };
+
+export const deleteUser = async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const userId = req.user?.id;
+  
+      if (!userId) {
+        return res.status(401).json({ message: 'Not authenticated' });
+      }
+  
+      await authService.deleteUser(userId);
+  
+      res.json({ message: 'User deleted successfully' });
+    } catch (error) {
+      if (error instanceof Error && error.message === 'User not found') {
+        return res.status(404).json({ message: error.message });
+      }
+      res.status(500).json({ message: 'Server error' });
+    }
+  };
