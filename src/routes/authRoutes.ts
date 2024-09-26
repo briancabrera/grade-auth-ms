@@ -7,7 +7,8 @@ import {
   logout,
   forgotPassword,
   resetPassword,
-  updateUser
+  updateUser,
+  deleteUser
 } from '../controllers/authController';
 import { authenticate } from '../middlewares/authenticate';
 import { AuthenticatedRequest } from '../types/types';
@@ -53,6 +54,14 @@ authRouter.put('/update', authenticate, async (req: AuthenticatedRequest, res: R
         await updateUser(req, res, next).catch(next);
     } catch (error) {
         next(error);
+    }
+});
+
+authRouter.delete('/delete', authenticate, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+    try {
+      await deleteUser(req, res);
+    } catch (error) {
+      next(error);
     }
 });
 
