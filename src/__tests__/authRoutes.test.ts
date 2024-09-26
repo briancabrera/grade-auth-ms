@@ -278,4 +278,57 @@ describe('Auth Routes', () => {
       expect(response.body).toHaveProperty('message', 'User not found');
     });
   });
+
+  describe('DELETE /auth/delete', () => {
+    it('should delete user successfully', async () => {
+      const mockUser = {
+        id: 1,
+        username: 'testuser',
+        email: 'test@example.com',
+        role: 'student'
+      };
+      (jwt.verify as jest.Mock).mockReturnValue({ userId: '1', role: 'student', email: 'test@example.com' });
+      (authService.deleteUser as jest.Mock).mockResolvedValue(undefined);
+
+      const response = await request(app)
+        .delete('/auth/delete')
+        .set('Authorization', 'Bearer mock_token');
+
+      expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty('message', 'User deleted successfully');
+      expect(authService.deleteUser).toHaveBeenCalledWith(1);
+    });
+
+    it('should return 401 if not authenticated', async () => {
+      const response = await request(app)
+        .delete('/auth/delete');
+
+      expect(response.status).toBe(401);
+      expect(response.body).toHaveProperty('message', 'No token provided');
+    });
+
+    it('should return 404 if user not found', async () => {
+      (jwt.verify as jest.Mock).mockReturnValue({ userId: '999', role: 'student', email: 'test@example.com' });
+      (authService.deleteUser as jest.Mock).mockRejectedValue(new Error('User not found'));
+
+      const response = await request(app)
+        .delete('/auth/delete')
+        .set('Authorization', 'Bearer mock_token');
+
+      expect(response.status).toBe(404);
+      expect(response.body).toHaveProperty('message', 'User not found');
+    });
+
+    it('should return 500 for server errors', async () => {
+      (jwt.verify as jest.Mock).mockReturnValue({ userId: '1', role: 'student', email: 'test@example.com' });
+      (authService.deleteUser as jest.Mock).mockRejectedValue(new Error('Database error'));
+
+      const response = await request(app)
+        .delete('/auth/delete')
+        .set('Authorization', 'Bearer mock_token');
+
+      expect(response.status).toBe(500);
+      expect(response.body).toHaveProperty('message', 'Server error');
+    });
+  });
 });
