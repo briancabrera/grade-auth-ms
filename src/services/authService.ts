@@ -105,6 +105,19 @@ export class AuthService {
 
     return users[userIndex];
   }
+
+  async deleteUser(userId: number): Promise<void> {
+    const userIndex = users.findIndex(user => user.id === userId);
+    if (userIndex === -1) {
+      throw new Error('User not found');
+    }
+
+    // Remove the user from the array
+    users.splice(userIndex, 1);
+
+    // perform additional cleanup tasks here
+    // such as deleting associated data or logging the deletion.
+  }
 }
 
 export const authService = new AuthService();
