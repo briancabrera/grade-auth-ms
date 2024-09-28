@@ -3,7 +3,6 @@ import { Request, Response, NextFunction } from 'express';
 import {
   register,
   login,
-  getCurrentUser,
   logout,
   forgotPassword,
   resetPassword
@@ -36,14 +35,6 @@ authRouter.post('/logout', authenticate, async (req: AuthenticatedRequest, res: 
         logout(req, res);
     } catch (error) {
         next(error);
-    }
-});
-
-authRouter.get('/me', authenticate, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-    try {
-      getCurrentUser(req, res);
-    } catch (error) {
-      next(error);
     }
 });
 

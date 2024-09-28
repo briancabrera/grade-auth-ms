@@ -62,33 +62,6 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
   }
 };
 
-export const getCurrentUser = (req: AuthenticatedRequest, res: Response) => {
-  try {
-    const user = req.user as UserPayload;
-    
-    if (!user) {
-      return res.status(401).json({ message: 'Not authenticated' });
-    }
-
-    const fullUser = authService.getUserById(user.id);
-
-    if (!fullUser) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    res.json({
-      user: {
-        id: fullUser.id,
-        username: fullUser.username,
-        email: fullUser.email,
-        role: fullUser.role
-      }
-    });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
-  }
-};
-
 export const logout = (req: AuthenticatedRequest, res: Response) => {
   res.json({ message: 'Logged out successfully' });
 };
